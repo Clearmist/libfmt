@@ -39,5 +39,5 @@ target_include_directories(fmt
 
 # Compiler flags
 if(NOT MSVC)
-    target_compile_options(fmt PRIVATE -Wall -Wno-unused-value -Wno-unused-but-set-variable -fPIC)
+    target_compile_options(fmt PRIVATE -Wall -Wno-unused-value -Wno-unused-but-set-variable -Wno-stringop-overflow -fPIC)
 endif()
