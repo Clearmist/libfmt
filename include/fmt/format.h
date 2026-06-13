@@ -1324,7 +1324,15 @@ inline auto equal2(const char* lhs, const char* rhs) -> bool {
 template <typename Char>
 FMT_CONSTEXPR20 FMT_INLINE void copy2(Char* dst, const char* src) {
   if (!is_constant_evaluated() && sizeof(Char) == sizeof(char)) {
+#if FMT_GCC_VERSION && FMT_GCC_VERSION >= 1201
+    // Suppress a false positive warning about buffer overflow in GCC 12+
+    FMT_GCC_PRAGMA("GCC diagnostic push")
+    FMT_GCC_PRAGMA("GCC diagnostic ignored \"-Wstringop-overflow\"")
+#endif
     memcpy(dst, src, 2);
+#if FMT_GCC_VERSION && FMT_GCC_VERSION >= 1201
+    FMT_GCC_PRAGMA("GCC diagnostic pop")
+#endif
     return;
   }
   *dst++ = static_cast<Char>(*src++);
@@ -1368,7 +1376,15 @@ FMT_CONSTEXPR inline auto format_decimal(Iterator out, UInt value, int size)
     -> format_decimal_result<Iterator> {
   // Buffer is large enough to hold all digits (digits10 + 1).
   Char buffer[digits10<UInt>() + 1] = {};
+#if FMT_GCC_VERSION && FMT_GCC_VERSION >= 1201
+  // Suppress a false positive warning about buffer overflow in GCC 12+
+  FMT_GCC_PRAGMA("GCC diagnostic push")
+  FMT_GCC_PRAGMA("GCC diagnostic ignored \"-Wstringop-overflow\"")
+#endif
   auto end = format_decimal(buffer, value, size).end;
+#if FMT_GCC_VERSION && FMT_GCC_VERSION >= 1201
+  FMT_GCC_PRAGMA("GCC diagnostic pop")
+#endif
   return {out, detail::copy_str_noinline<Char>(buffer, end, out)};
 }
 
