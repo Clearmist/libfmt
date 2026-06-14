@@ -38,6 +38,8 @@ target_include_directories(fmt
 )
 
 # Compiler flags
-if(NOT MSVC)
+if(MSVC)
+    target_compile_options(fmt PRIVATE /utf-8)
+else()
     target_compile_options(fmt PRIVATE -Wall -Wno-unused-value -Wno-unused-but-set-variable -Wno-stringop-overflow -fPIC)
 endif()
